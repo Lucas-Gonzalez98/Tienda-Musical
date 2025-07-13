@@ -1,35 +1,37 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useEffect, useState } from "react";
+import Instrumento from "./models/Instrumento";
+import { leerInstrumentos } from "./services/FuncionLeer";
+import InstrumentoCard from "./components/InstrumentoCard";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [instrumentos, setInstrumentos] = useState<Instrumento[]>([]);
+
+  useEffect(() => {
+  leerInstrumentos().then(data => {
+    setInstrumentos(data);
+  });
+}, []);
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <div className="container mt-4 text-center">
+      <h1 className="mb-2">Lista de Instrumentos</h1>
+      <div
+              style={{
+                height: "4px",
+                width: "80%",
+                maxWidth: "500px",
+                backgroundColor: "#0d6efd",
+                margin: "0 auto 1rem auto",
+                borderRadius: "2px",
+              }}
+            ></div>
+      <div className="d-flex flex-wrap justify-content-start">
+        {instrumentos.map((inst) => (
+          <InstrumentoCard key={inst.id} instrumento={inst} />
+        ))}
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    </div>
+  );
 }
 
-export default App
+export default App;
