@@ -25,16 +25,40 @@ repositories {
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-    implementation("org.springframework.boot:spring-boot-starter-oauth2-authorization-server")
-    implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
-    implementation("org.springframework.boot:spring-boot-starter-security")
+    //implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-web")
+
+    implementation('org.springframework.boot:spring-boot-starter-websocket')
+    implementation('com.mercadopago:sdk-java:2.2.0')
+
+    //Swagger/OPENAPI
+    implementation('org.springdoc:springdoc-openapi-starter-webmvc-ui:2.7.0')
+
     compileOnly("org.projectlombok:lombok")
-    developmentOnly("org.springframework.boot:spring-boot-devtools")
     annotationProcessor("org.projectlombok:lombok")
+
+    // MapStruct
+    implementation('org.mapstruct:mapstruct:1.5.5.Final')
+    annotationProcessor('org.mapstruct:mapstruct-processor:1.5.5.Final')
+
+    // MySQL driver
+    runtimeOnly('com.mysql:mysql-connector-j')
+
+    // PDF generation with OpenPDF
+    implementation("com.github.librepdf:openpdf:1.3.30")
+
+    //Excel
+    implementation('org.apache.poi:poi-ooxml:5.2.5')
+    implementation('org.apache.poi:poi:5.2.5')
+
+    developmentOnly("org.springframework.boot:spring-boot-devtools")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.security:spring-security-test")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.annotationProcessorGeneratedSourcesDirectory = file("$buildDir/generated/sources/annotationProcessor/java/main")
 }
 
 tasks.withType(Test) {

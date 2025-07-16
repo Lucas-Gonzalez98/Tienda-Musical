@@ -1,36 +1,26 @@
-import { useEffect, useState } from "react";
-import Instrumento from "./models/Instrumento";
-import { leerInstrumentos } from "./services/FuncionLeer";
-import InstrumentoCard from "./components/InstrumentoCard";
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Navbar from './components/Navegacion/Navbar';
+import Home from './components/Navegacion/Home';
+import Productos from './components/Navegacion/Productos';
+import Ubicacion from './components/Navegacion/Ubicacion';
+import GlobalStyles from './styles/GlobalStyles';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import '@fortawesome/fontawesome-free/css/all.min.css';
 
 function App() {
-  const [instrumentos, setInstrumentos] = useState<Instrumento[]>([]);
-
-  useEffect(() => {
-  leerInstrumentos().then(data => {
-    setInstrumentos(data);
-  });
-}, []);
-
   return (
-    <div className="container mt-4 text-center">
-      <h1 className="mb-2">Lista de Instrumentos</h1>
-      <div
-              style={{
-                height: "4px",
-                width: "80%",
-                maxWidth: "500px",
-                backgroundColor: "#0d6efd",
-                margin: "0 auto 1rem auto",
-                borderRadius: "2px",
-              }}
-            ></div>
-      <div className="d-flex flex-wrap justify-content-start">
-        {instrumentos.map((inst) => (
-          <InstrumentoCard key={inst.id} instrumento={inst} />
-        ))}
+    <Router>
+      <GlobalStyles />
+      <div className="App">
+        <Navbar />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/productos" element={<Productos />} />
+          <Route path="/ubicacion" element={<Ubicacion />} />
+        </Routes>
       </div>
-    </div>
+    </Router>
   );
 }
 
