@@ -17,7 +17,7 @@ public class Stock extends Master{
 
     private Integer stockActual;
 
-    @OneToOne
+    @OneToOne(optional = true)
     @JoinColumn(name = "instrumento_id")
     private Instrumento instrumento;
 }

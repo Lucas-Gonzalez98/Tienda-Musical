@@ -9,4 +9,5 @@ import lombok.*;
 public class StockDTO extends MasterDTO{
 
     private Integer stockActual;
+    private InstrumentoDTO instrumento;
 }

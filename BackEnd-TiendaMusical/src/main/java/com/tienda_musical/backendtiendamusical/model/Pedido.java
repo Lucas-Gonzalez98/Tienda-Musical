@@ -21,7 +21,7 @@ public class Pedido extends Master{
 
     private LocalDate fechaPedido;
     private Double totalPedido;
-
+    private Boolean pagado;
     //private Estado estado;
 
     //private Cliente cliente;

@@ -28,7 +28,7 @@ public class Instrumento extends Master{
     @JoinColumn(name = "categoria_id")
     private Categoria categoria;
 
-    @OneToOne(mappedBy = "instrumento", cascade = { CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH}, orphanRemoval = true)
+    @OneToOne(mappedBy = "instrumento", cascade = { CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     private Stock stock;
 
     @OneToMany(mappedBy = "instrumento",  cascade = { CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})

@@ -17,6 +17,4 @@ public class InstrumentoDTO extends MasterDTO{
     private Integer cantidadVendida;
     private String descripcion;
     private CategoriaDTO categoria;
-    private StockDTO stock;
-
 }

@@ -6,12 +6,13 @@ import org.mapstruct.*;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring", uses = {CategoriaMapper.class, StockMapper.class})
+@Mapper(componentModel = "spring", uses = {CategoriaMapper.class})
 public interface InstrumentoMapper extends MasterMapper<Instrumento, InstrumentoDTO> {
 
     InstrumentoDTO toDTO(Instrumento source);
 
     @Mapping(target = "pedidos", ignore = true)
+    @Mapping(target = "stock", ignore = true)
     Instrumento toEntity(InstrumentoDTO source);
 
     @Override
