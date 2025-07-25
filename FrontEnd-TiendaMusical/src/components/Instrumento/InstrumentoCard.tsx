@@ -3,10 +3,12 @@ import styled from "styled-components";
 import { Card, Button, Badge } from "react-bootstrap";
 import Instrumento from "../../models/Instrumento";
 import { BsEye, BsCart3 } from "react-icons/bs";
+import type Stock from "../../models/Stock";
 
 interface Props {
     instrumento: Instrumento;
-    onVerDetalle?: (id: number) => void;
+    stock?: Stock;
+    onVerDetalle?: (instrumento: Instrumento, stock?: Stock) => void;
     onComprar?: (id: number) => void;
 }
 
@@ -76,10 +78,10 @@ const DetalleButton = styled(Button)`
   }
 `;
 
-const InstrumentoCard: React.FC<Props> = ({ instrumento, onVerDetalle, onComprar }) => {
+const InstrumentoCard: React.FC<Props> = ({ instrumento, stock, onVerDetalle, onComprar }) => {
     const handleCardClick = (e: React.MouseEvent) => {
         if ((e.target as HTMLElement).closest("button")) return;
-        onVerDetalle?.(instrumento.id || 0);
+        onVerDetalle?.(instrumento, stock);
     };
 
     return (
@@ -151,18 +153,19 @@ const InstrumentoCard: React.FC<Props> = ({ instrumento, onVerDetalle, onComprar
                         <small className="text-muted">
                             <strong>Vendidos:</strong> {instrumento.cantidadVendida}
                         </small>
-                        {instrumento.stock && (
+                        {stock && (
                             <small
-                                className={`fw-bold ${instrumento.stock.stockActual > 3
-                                        ? "text-success"
-                                        : instrumento.stock.stockActual > 0
-                                            ? "text-warning"
-                                            : "text-danger"
+                                className={`fw-bold ${stock.stockActual > 3
+                                    ? "text-success"
+                                    : stock.stockActual > 0
+                                        ? "text-warning"
+                                        : "text-danger"
                                     }`}
                             >
-                                <strong>Stock:</strong> {instrumento.stock.stockActual}
+                                <strong>Stock:</strong> {stock.stockActual}
                             </small>
                         )}
+
                     </div>
                 </div>
 
@@ -175,13 +178,11 @@ const InstrumentoCard: React.FC<Props> = ({ instrumento, onVerDetalle, onComprar
                             onComprar?.(instrumento.id || 0);
                         }}
                         className="comprar-btn d-flex align-items-center justify-content-center gap-2 fw-bold"
-                        disabled={!instrumento.stock || instrumento.stock.stockActual <= 0}
+                        disabled={!stock || stock.stockActual <= 0}
                     >
                         <BsCart3 size={16} />
                         <span>
-                            {!instrumento.stock || instrumento.stock.stockActual <= 0
-                                ? "Sin Stock"
-                                : "Comprar"}
+                            {!stock || stock.stockActual <= 0 ? "Sin Stock" : "Comprar"}
                         </span>
                     </ComprarButton>
 
@@ -190,7 +191,7 @@ const InstrumentoCard: React.FC<Props> = ({ instrumento, onVerDetalle, onComprar
                         size="sm"
                         onClick={(e) => {
                             e.stopPropagation();
-                            onVerDetalle?.(instrumento.id || 0);
+                            onVerDetalle?.(instrumento, stock);
                         }}
                         className="detalle-btn d-flex align-items-center justify-content-center gap-2"
                     >

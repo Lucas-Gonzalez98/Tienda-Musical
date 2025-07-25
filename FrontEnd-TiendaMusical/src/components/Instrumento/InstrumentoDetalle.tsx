@@ -21,9 +21,11 @@ import {
     BsTag,
 } from "react-icons/bs";
 import Instrumento from "../../models/Instrumento";
+import type Stock from "../../models/Stock";
 
 interface Props {
     instrumento: Instrumento;
+    stock?: Stock;
     onVolver?: () => void;
     onComprar?: (id: number) => void;
 }
@@ -137,7 +139,7 @@ const StyledAlert = styled(Alert)`
   color: #0d6efd;
 `;
 
-const InstrumentoDetalle: React.FC<Props> = ({ instrumento, onVolver, onComprar }) => {
+const InstrumentoDetalle: React.FC<Props> = ({ instrumento, stock, onVolver, onComprar }) => {
     const [isFavorito, setIsFavorito] = useState(false);
     const [cantidad, setCantidad] = useState(1);
     const [imagenError, setImagenError] = useState(false);
@@ -149,7 +151,7 @@ const InstrumentoDetalle: React.FC<Props> = ({ instrumento, onVolver, onComprar 
         return precioProducto + costoEnvio;
     };
 
-    const stockDisponible = instrumento.stock?.stockActual || 0;
+    const stockDisponible = stock?.stockActual || 0;
 
     const handleComprar = () => {
         onComprar?.(instrumento.id || 0);
@@ -290,11 +292,11 @@ const InstrumentoDetalle: React.FC<Props> = ({ instrumento, onVolver, onComprar 
                                                 </Badge>
                                             </div>
                                         </Col>
-                                        {instrumento.catorgoria && (
+                                        {instrumento.categoria && (
                                             <Col sm={12}>
                                                 <div className="d-flex align-items-center gap-2 text-muted">
                                                     <BsTag size={18} />
-                                                    <span><strong>Categoría:</strong> {instrumento.catorgoria.denominacion}</span>
+                                                    <span><strong>Categoría:</strong> {instrumento.categoria.denominacion}</span>
                                                 </div>
                                             </Col>
                                         )}

@@ -3,6 +3,30 @@ import type Instrumento from "../models/Instrumento";
 
 const API_URL = "http://localhost:8080/api/instrumento";
 
+interface FiltrosInstrumento {
+    idInstrumento?: number;
+    instrumento?: string;
+    precioMin?: number;
+    precioMax?: number;
+    eliminado?: boolean;
+    idCategoria?: number;
+    page?: number;
+    size?: number;
+    sort?: string;
+}
+
+interface Page<T> {
+    content: T[];
+    totalElements: number;
+    totalPages: number;
+    size: number;
+    number: number;
+    first: boolean;
+    last: boolean;
+}
+
+
+
 class InstrumentoService {
     // Trae todos los instrumentos, eliminados y no eliminados
     async getAll(): Promise<Instrumento[]> {
@@ -26,6 +50,28 @@ class InstrumentoService {
         }
     }
 
+    async filtrar(filtros: FiltrosInstrumento): Promise<Page<Instrumento>> {
+        try {
+            const params = new URLSearchParams();
+
+            if (filtros.idInstrumento !== undefined) params.append("idInstrumento", filtros.idInstrumento.toString());
+            if (filtros.instrumento) params.append("instrumento", filtros.instrumento);
+            if (filtros.precioMin !== undefined) params.append("precioMin", filtros.precioMin.toString());
+            if (filtros.precioMax !== undefined) params.append("precioMax", filtros.precioMax.toString());
+            if (filtros.eliminado !== undefined) params.append("eliminado", filtros.eliminado.toString());
+            if (filtros.idCategoria !== undefined) params.append("idCategoria", filtros.idCategoria.toString());
+            if (filtros.page !== undefined) params.append("page", filtros.page.toString());
+            if (filtros.size !== undefined) params.append("size", filtros.size.toString());
+            if (filtros.sort) params.append("sort", filtros.sort);
+
+            const { data } = await axios.get<Page<Instrumento>>(`${API_URL}/filtrar?${params.toString()}`);
+            return data;
+        } catch (error) {
+            console.error("Error al filtrar instrumentos", error);
+            throw error;
+        }
+    }
+
     async getById(id: number): Promise<Instrumento> {
         try {
             const { data } = await axios.get<Instrumento>(`${API_URL}/${id}`);
@@ -35,6 +81,16 @@ class InstrumentoService {
             throw error;
         }
     }
+
+    async getInstrumentosSinStock(): Promise<Instrumento[]> {
+    try {
+        const { data } = await axios.get<Instrumento[]>(`${API_URL}/sin-stock`);
+        return data;
+    } catch (error) {
+        console.error("Error al obtener instrumentos sin stock", error);
+        throw error;
+    }
+}
 
     async create(instrumento: Partial<Instrumento>): Promise<Instrumento> {
         try {

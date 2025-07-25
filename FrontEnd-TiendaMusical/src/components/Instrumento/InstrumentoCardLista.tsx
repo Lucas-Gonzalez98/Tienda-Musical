@@ -5,6 +5,8 @@ import Instrumento from "../../models/Instrumento";
 import InstrumentoCard from "./InstrumentoCard";
 import InstrumentoService from "../../services/InstrumentoService";
 import InstrumentoDetalle from "./InstrumentoDetalle";
+import type Stock from "../../models/Stock";
+import StockService from "../../services/StockService";
 
 // Styled components
 
@@ -98,23 +100,33 @@ const InstrumentoCardLista = () => {
   const [error, setError] = useState<string | null>(null);
   const [instrumentoSeleccionado, setInstrumentoSeleccionado] = useState<Instrumento | null>(null);
   const [vistaDetalle, setVistaDetalle] = useState(false);
+  const [stocks, setStocks] = useState<Stock[]>([]);
+  const [stockSeleccionado, setStockSeleccionado] = useState<Stock | null>(null);
 
   useEffect(() => {
-    InstrumentoService.getActivos()
-      .then(setInstrumentos)
-      .catch((error) => {
-        console.error("Error al cargar instrumentos", error);
-        setError("Error al cargar los instrumentos. Por favor, inténtalo de nuevo.");
+    setLoading(true);
+
+    Promise.all([
+      InstrumentoService.getActivos(),
+      StockService.getAll()
+    ])
+      .then(([instrumentosData, stocksData]) => {
+        setInstrumentos(instrumentosData);
+        setStocks(stocksData);
       })
-      .finally(() => setLoading(false));
+      .catch((error) => {
+        console.error("Error al cargar instrumentos o stocks", error);
+        setError("Error al cargar los datos. Por favor, inténtalo de nuevo.");
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   }, []);
 
-  const handleVerDetalle = (id: number) => {
-    const instrumento = instrumentos.find(inst => inst.id === id);
-    if (instrumento) {
-      setInstrumentoSeleccionado(instrumento);
-      setVistaDetalle(true);
-    }
+  const handleVerDetalle = (instrumento: Instrumento, stock?: Stock) => {
+    setInstrumentoSeleccionado(instrumento);
+    setStockSeleccionado(stock || null);
+    setVistaDetalle(true);
   };
 
   const handleVolver = () => {
@@ -130,7 +142,8 @@ const InstrumentoCardLista = () => {
     return (
       <InstrumentoDetalle
         instrumento={instrumentoSeleccionado}
-        onVolver={handleVolver}
+        stock={stockSeleccionado ?? undefined}
+        onVolver={() => setVistaDetalle(false)}
         onComprar={handleComprar}
       />
     );
@@ -183,21 +196,28 @@ const InstrumentoCardLista = () => {
           <>
             {/* Grid de productos */}
             <Row className="g-4">
-              {instrumentos.map((instrumento) => (
-                <InstrumentoCardWrapper
-                  key={instrumento.id}
-                  xs={12}
-                  sm={6}
-                  md={4}
-                  lg={3}
-                >
-                  <InstrumentoCard
-                    instrumento={instrumento}
-                    onVerDetalle={handleVerDetalle}
-                    onComprar={handleComprar}
-                  />
-                </InstrumentoCardWrapper>
-              ))}
+              {instrumentos.map((instrumento) => {
+                const stock = stocks.find(
+                  (s) => s.instrumento?.id === instrumento.id
+                );
+
+                return (
+                  <InstrumentoCardWrapper
+                    key={instrumento.id}
+                    xs={12}
+                    sm={6}
+                    md={4}
+                    lg={3}
+                  >
+                    <InstrumentoCard
+                      instrumento={instrumento}
+                      stock={stock}
+                      onVerDetalle={handleVerDetalle}
+                      onComprar={handleComprar}
+                    />
+                  </InstrumentoCardWrapper>
+                );
+              })}
             </Row>
           </>
         )}

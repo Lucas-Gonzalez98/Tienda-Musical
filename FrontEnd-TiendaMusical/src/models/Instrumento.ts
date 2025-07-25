@@ -1,5 +1,4 @@
 import type Categoria from "./Categoria";
-import type Stock from "./Stock";
 
 export default class Instrumento {
     id?: number;
@@ -7,13 +6,10 @@ export default class Instrumento {
     marca: string = "";
     modelo: string = "";
     imagen: string = "";
-    precio: string = "";
+    precio: number = 0;
     costoEnvio: number = 0;
     cantidadVendida: number = 0;
     descripcion: string = "";
-    stock?: Stock;
-    catorgoria?: Categoria;
+    categoria?: Categoria;
     eliminado!: boolean;
-
-
 }
